@@ -6,11 +6,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
-
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
+import SelectOptions from './SelectOptions'
 
 export default class BookModal extends React.Component {
 
@@ -24,7 +20,7 @@ export default class BookModal extends React.Component {
                 publisher: ''
             },
             open: false,
-            title:''
+            title: ''
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -41,40 +37,24 @@ export default class BookModal extends React.Component {
         this.props.actionType(this.state.formData)
     }
 
-    componentWillReceiveProps(props)
-    {
-        if(props.action==='edit')
-        this.setState({
-            formData:{
-                name:props.data.name,
-                author:props.data.author,
-                publisher:props.data.publisher
-            },
-            title:'Edit Book Details'
-        })
-        else  this.setState({
-            title:'Add Book Details'
+    componentWillReceiveProps(props) {
+        if (props.action === 'edit')
+            this.setState({
+                formData: {
+                    name: props.data.name,
+                    author: props.data.author,
+                    publisher: props.data.publisher
+                },
+                title: 'Edit Book Details'
+            })
+        else this.setState({
+            title: 'Add Book Details'
         })
     }
     render() {
 
         const { formData } = this.state
         const { authors, publishers } = this.props
-
-        if (authors === undefined)
-            return false
-
-        const renderAuthors = authors.map(item => {
-            return (
-                <MenuItem value={item.name} key={item.id}>{item.name}</MenuItem>
-            )
-        })
-
-        const renderPublishers = publishers.map(item => {
-            return (
-                <MenuItem value={item.name} key={item.id}>{item.name}</MenuItem>
-            )
-        })
 
         return (
             <Dialog
@@ -92,6 +72,7 @@ export default class BookModal extends React.Component {
                         <DialogContentText>
                             Enter Book details to make changes in the system.
                         </DialogContentText>
+
                         <TextValidator
                             label="Book Name"
                             onChange={this.handleChange}
@@ -103,47 +84,20 @@ export default class BookModal extends React.Component {
                             fullWidth
                         />
 
-                        <div>
-                            <InputLabel htmlFor="controlled-open-select">Authors</InputLabel>
-                            &nbsp;
+                        <SelectOptions
+                            name='author'
+                            data={authors}
+                            onChange={this.handleChange}
+                            value={formData.author}
+                        />
 
-                            <Select
-                                // open={this.state.open}
-                                // onClose={this.handleClose}
-                                // onOpen={this.handleOpen}
-                                name="author"
-                                onChange={this.handleChange}
-                                value={this.state.formData.author}
-                            >
-                                {
-                                    authors.length > 0 ?
+                        <SelectOptions
+                            name='publisher'
+                            data={publishers}
+                            onChange={this.handleChange}
+                            value={formData.publisher}
+                        />
 
-                                        renderAuthors
-                                        :
-                                        <p>No authors found</p>
-                                }
-                            </Select>
-                        </div>
-
-                        <div>
-                            <InputLabel htmlFor="controlled-open-select">Publishers</InputLabel>
-                                &nbsp;
-                            <Select
-                                // open={this.state.open}
-                                // onClose={this.handleClose}
-                                // onOpen={this.handleOpen}
-                                name="publisher"
-                                onChange={this.handleChange}
-                                value={this.state.formData.publisher}
-                            >
-                                {
-                                    publishers.length > 0 ?
-                                        renderPublishers
-                                        :
-                                        <p >No publishers found</p>
-                                }
-                            </Select>
-                        </div>
                     </DialogContent>
 
                     <DialogActions>

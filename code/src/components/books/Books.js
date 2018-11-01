@@ -13,8 +13,7 @@ export default class Books extends React.Component {
             open: false,
             action: '',
             authors: [],
-            publishers: [],
-            dataType:'books'
+            publishers: []
         }
     }
 
@@ -26,35 +25,36 @@ export default class Books extends React.Component {
             publishers
         })
     }
-toggleState=(action)=>{
-    this.setState({
-        open: !this.state.open,
-        action: action
-    });
-}
-deleteData=(item)=>{
-    this.setState({
-        currentDataItem: item
-    })
-    Actions.deleteData(this.state.books,"books",item)
-}
-editData=(data)=>{
-    this.setState({
-        currentDataItem: data
-    })
-    this.toggleState('edit')
-}
-editDetails = (data) => {
-    const updatedData = {
-        "id": this.state.currentDataItem.id,
-        ...data
+    toggleState = (action) => {
+        this.setState({
+            open: !this.state.open,
+            action: action
+        });
     }
-    const check = Actions.alreadyExists(this.state.books, updatedData.name,updatedData.id)
-    if (check == 0) {
-    this.toggleState('edit')
-    Actions.editData(this.state.books, "books", updatedData)}
-    else alert("Book with this name already exists")
-}
+    deleteData = (item) => {
+        this.setState({
+            currentDataItem: item
+        })
+        Actions.deleteData(this.state.books, "books", item)
+    }
+    editData = (data) => {
+        this.setState({
+            currentDataItem: data
+        })
+        this.toggleState('edit')
+    }
+    editDetails = (data) => {
+        const updatedData = {
+            "id": this.state.currentDataItem.id,
+            ...data
+        }
+        const check = Actions.alreadyExists(this.state.books, updatedData.name, updatedData.id)
+        if (check == 0) {
+            this.toggleState('edit')
+            Actions.editData(this.state.books, "books", updatedData)
+        }
+        else alert("Book with this name already exists")
+    }
     addBook = (bookData) => {
 
         const book = {
@@ -79,25 +79,30 @@ editDetails = (data) => {
     }
 
     render() {
-        const { books, open, action, authors, publishers,currentDataItem } = this.state
+        const { books, open, action, authors, publishers, currentDataItem } = this.state
         return (
             <div>
                 <h2>Books</h2>
-                <BookList data={books} editData={this.editData} deleteData={this.deleteData}/>
+                <BookList
+                    data={books}
+                    editData={this.editData}
+                    deleteData={this.deleteData}
+                />
                 {
                     authors.length > 0 && publishers.length > 0 ?
-                        <button onClick={()=>this.toggleState('add')} >Add book</button>
+                        <button onClick={() => this.toggleState('add')} >Add book</button>
                         : <p>No Authors or publishers exist
                         </p>
-                        }
+                }
                 <BookModal
                     open={open}
                     action={action}
-                    handleClose={()=>this.toggleState('')}
-                    actionType={action=='add'? this.addBook : this.editDetails}
+                    handleClose={() => this.toggleState('')}
+                    actionType={action == 'add' ? this.addBook : this.editDetails}
                     authors={authors}
                     data={currentDataItem}
-                    publishers={publishers} />
+                    publishers={publishers}
+                />
 
             </div>
         )
